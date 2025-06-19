@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tourist-app-android</string>
+    <string name="mapbox_access_token">sk.eyJ1IjoiZGVsc2VhbiIsImEiOiJjbWMzanMwOXQwNHo4MnFzM3Y4dnBxY3B2In0.rcO55vWAwOin1GNSI9cRkQ</string>
 </resources>
