@@ -41,5 +41,4 @@ dependencies {
 
     // MapBox
     implementation("com.mapbox.maps:android:11.13.1")
-    implementation("com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0")
 }
