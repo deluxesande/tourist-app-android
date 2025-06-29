@@ -41,4 +41,12 @@ dependencies {
 
     // MapBox
     implementation("com.mapbox.maps:android:11.13.1")
+
+    // Extras
+    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-geojson:7.4.0")
+    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:7.4.0")
+    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-turf:7.4.0")
+    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-core:7.4.0")
+
+    implementation ("me.zhanghai.android.materialratingbar:library:1.4.0")
 }

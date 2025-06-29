@@ -4,7 +4,9 @@ import com.example.tourist_app_android.R;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +20,20 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.gestures.MoveGestureDetector;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.ImageHolder;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
 import com.mapbox.maps.plugin.LocationPuck2D;
+import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
+import com.mapbox.maps.plugin.annotation.AnnotationType;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener;
@@ -31,11 +42,16 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomePage extends Fragment {
 
     private MapView mapView;
     private FloatingActionButton floatingActionButton;
-    private ActivityResultLauncher<String> activityResultLauncher;
 
     private final OnIndicatorBearingChangedListener onIndicatorBearingChangedListener = v ->
             mapView.getMapboxMap().setCamera(new CameraOptions.Builder().bearing(v).build());
@@ -43,6 +59,9 @@ public class HomePage extends Fragment {
     private final OnIndicatorPositionChangedListener onIndicatorPositionChangedListener = point -> {
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(point).zoom(18.0).build());
         getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(point));
+        
+        // Fetch hospitals near user location
+        // fetchHospitals(point);
     };
 
     private final OnMoveListener onMoveListener = new OnMoveListener() {
@@ -63,6 +82,56 @@ public class HomePage extends Fragment {
         public void onMoveEnd(@NonNull MoveGestureDetector moveGestureDetector) {}
     };
 
+    private void fetchHospitals(Point userLocation) {
+        MapboxGeocoding client = MapboxGeocoding.builder()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .query("hospital")
+                .proximity(userLocation)
+                .limit(10)
+                .build();
+        
+        client.enqueueCall(new Callback<GeocodingResponse>() {
+            @Override
+            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<CarmenFeature> results = response.body().features();
+                    
+                    if (!results.isEmpty()) {
+                        addHospitalsToMap(results);
+                    } else {
+                        Toast.makeText(requireContext(), "No hospitals found", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("Geocoding", "Code: " + response.code() + " | " + response.message());
+                    Toast.makeText(requireContext(), "Error fetching hospitals", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error fetching hospitals", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void addHospitalsToMap(List<CarmenFeature> hospitals) {
+        AnnotationPlugin annotationPlugin = mapView.getPlugin("annotationPlugin");
+
+        if (annotationPlugin != null) {
+            PointAnnotationManager pointAnnotationManager = (PointAnnotationManager) annotationPlugin.createAnnotationManager(AnnotationType.PointAnnotation, null);
+
+            for (CarmenFeature feature : hospitals) {
+                Point point = (Point) feature.geometry();
+
+                PointAnnotationOptions options = new PointAnnotationOptions()
+                        .withPoint(point)
+                        .withIconImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_marker));
+                
+                pointAnnotationManager.create(options);
+            }
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -78,7 +147,7 @@ public class HomePage extends Fragment {
         floatingActionButton.hide();
 
         // Initialize permission launcher
-        activityResultLauncher = registerForActivityResult(
+        ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 granted -> {
                     if (granted) {
@@ -95,7 +164,8 @@ public class HomePage extends Fragment {
         }
 
         // Load map style
-        mapView.getMapboxMap().loadStyle("mapbox://styles/delsean/cmcf3giti005n01sb5unca2g8", this::initLocationComponent);
+        // mapView.getMapboxMap().loadStyle("mapbox://styles/delsean/cmcf3giti005n01sb5unca2g8", this::initLocationComponent);
+        mapView.getMapboxMap().loadStyle(Style.MAPBOX_STREETS, this::initLocationComponent);
     }
 
     private void initLocationComponent(@NonNull Style style) {
@@ -106,6 +176,7 @@ public class HomePage extends Fragment {
         LocationPuck2D puck = new LocationPuck2D();
         puck.setBearingImage(ImageHolder.from(R.drawable.ic_location_marker));
         locationComponent.setLocationPuck(puck);
+        // locationComponent.setPuckBearingEnabled(false); // Does not work
 
         locationComponent.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
         locationComponent.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener);
