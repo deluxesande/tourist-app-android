@@ -12,50 +12,108 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_places_holder"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="70dp"
-        android:layout_marginStart="10dp"
-        android:layout_alignParentBottom="true">
-        <ImageView
-            android:layout_width="90dp"
-            android:layout_height="100dp"
-            android:background="@drawable/bg_rounded_corners"
-            android:backgroundTint="#cccccc" />
-
+        android:layout_alignParentBottom="true"
+        android:scrollbars="none">
         <LinearLayout
-            android:layout_width="180dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:orientation="vertical">
-            <TextView
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Le Arda Restraunt"
-                android:textStyle="bold"
-                android:textSize="17sp"
-                android:textColor="#000000" />
-            <TextView
+                android:background="@drawable/bg_places_holder"
+                android:layout_marginStart="10dp">
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/bg_rounded_corners"
+                    android:backgroundTint="#cccccc" />
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Le Arda Restraunt"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
+                        android:textColor="#000000" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Vivamus aliquam nisl eu massa aliquam mollis."
+                        android:lineSpacingExtra="5dp"
+                        android:textSize="12sp"/>
+                    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="12dp"
+                        style="@style/Widget.MaterialRatingBar.RatingBar"
+                        android:numStars="5"
+                        android:rating="4"
+                        app:mrb_progressTint="#FFD700"
+                        app:mrb_secondaryProgressTint="#FFD700"
+                        app:mrb_progressBackgroundTint="#FFD700"
+                        app:mrb_fillBackgroundStars="false"
+                        android:stepSize="0.5"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Vivamus aliquam nisl eu massa aliquam mollis."
-                android:lineSpacingExtra="5dp"
-                android:textSize="12sp"/>
-            <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_marginTop="12dp"
-                style="@style/Widget.MaterialRatingBar.RatingBar"
-                android:numStars="5"
-                android:rating="4"
-                app:mrb_progressTint="#FFD700"
-                android:stepSize="1"/>
+                android:background="@drawable/bg_places_holder"
+                android:layout_marginStart="10dp">
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/bg_rounded_corners"
+                    android:backgroundTint="#cccccc" />
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Le Arda Restraunt"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
+                        android:textColor="#000000" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Vivamus aliquam nisl eu massa aliquam mollis."
+                        android:lineSpacingExtra="5dp"
+                        android:textSize="12sp"/>
+                    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="12dp"
+                        style="@style/Widget.MaterialRatingBar.RatingBar"
+                        android:numStars="5"
+                        android:rating="3.5"
+                        app:mrb_progressTint="#FFD700"
+                        app:mrb_secondaryProgressTint="#FFD700"
+                        app:mrb_progressBackgroundTint="#FFD700"
+                        app:mrb_fillBackgroundStars="false"
+                        android:stepSize="0.5"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
+    </HorizontalScrollView>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/focusLocation"
