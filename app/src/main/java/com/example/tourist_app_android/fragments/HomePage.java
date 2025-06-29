@@ -29,15 +29,18 @@ import com.mapbox.maps.ImageHolder;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
 import com.mapbox.maps.plugin.LocationPuck2D;
+import com.mapbox.maps.plugin.Plugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationType;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
+import com.mapbox.maps.plugin.compass.CompassPlugin;
+import com.mapbox.maps.plugin.compass.generated.CompassSettingsInterface;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
+import com.mapbox.maps.plugin.scalebar.ScaleBarPlugin;
 
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
@@ -161,6 +164,18 @@ public class HomePage extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        // Mapbox default UI customization
+        ScaleBarPlugin scaleBarPlugin = mapView.getPlugin(Plugin.MAPBOX_SCALEBAR_PLUGIN_ID);
+        if (scaleBarPlugin != null) {
+            scaleBarPlugin.setEnabled(false);
+        }
+
+        CompassPlugin compassPlugin = mapView.getPlugin(Plugin.MAPBOX_COMPASS_PLUGIN_ID);
+        if (compassPlugin != null) {
+            compassPlugin.setMarginTop(190f);
+            compassPlugin.setMarginRight(40f);
         }
 
         // Load map style
